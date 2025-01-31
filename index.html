@@ -1,23 +1,14 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat Analyzer</title>
-    <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-    <div class="container">
-        <h1>Chat Wrapped</h1>
-        <div id="analysis-results">
-            <p>Interest Level: <span id="interest-level">87%</span></p>
-            <p>Red Flags: <span id="red-flags">2%</span></p>
-            <p>Top Used Words: <span id="top-words">her</span></p>
-            <p>Still hangs out with her ex Blake</p>
-        </div>
-        <textarea id="chat-input" placeholder="Paste your chat here..."></textarea>
-        <button id="analyze-btn">Analyze Chat</button>
+<div class="container">
+    <h1>Chat Wrapped</h1>
+    <div id="analysis-results">
+        <p>📊 Total Interactions: <span style="color: #00ff88;">5789</span></p>
+        <p>💚 Interest Level: <span id="interest-level">87%</span></p>
+        <p>🚩 Red Flags: <span id="red-flags">2%</span></p>
+        <p>🔝 Top Used Words: <span id="top-words">her</span></p>
+        <p style="border-left: 3px solid #ff4d4d; padding-left: 10px; margin-top: 20px;">
+            ⚠️ Still hangs out with her ex Blake
+        </p>
     </div>
-    <script src="script.js"></script>
-</body>
-</html>
+    <textarea id="chat-input" placeholder="Paste your chat here..."></textarea>
+    <button id="analyze-btn">Analyze Chat</button>
+</div>
