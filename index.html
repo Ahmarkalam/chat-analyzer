@@ -37,25 +37,8 @@
         <h1 class="text-center text-3xl font-bold mb-5">Chat Wrapped</h1>
 
         <form id="chat-data-form" class="mb-6">
-            <h2 class="text-lg font-semibold mb-2">Enter Chat Data</h2>
-            <div class="grid grid-cols-2 gap-4">
-                <div>
-                    <label for="your-messages">Your Messages:</label>
-                    <input type="number" id="your-messages-input" class="w-full p-2 border rounded" required>
-                </div>
-                <div>
-                    <label for="her-messages">Her Messages:</label>
-                    <input type="number" id="her-messages-input" class="w-full p-2 border rounded" required>
-                </div>
-                <div>
-                    <label for="your-response-time">Your Avg Response Time (s):</label>
-                    <input type="number" id="your-response-time-input" class="w-full p-2 border rounded" required>
-                </div>
-                <div>
-                    <label for="her-response-time">Her Avg Response Time (hours):</label>
-                    <input type="number" id="her-response-time-input" class="w-full p-2 border rounded" required>
-                </div>
-            </div>
+            <h2 class="text-lg font-semibold mb-2">Paste Your Chat Data</h2>
+            <textarea id="chat-input" class="w-full p-2 border rounded h-40" placeholder="Paste your chat log here..." required></textarea>
             <button type="submit" class="mt-4 bg-pink-500 text-white py-2 px-4 rounded">Analyze</button>
         </form>
 
@@ -69,7 +52,7 @@
             <div class="text-center">
                 <h2 class="text-lg font-semibold">Average Response Time</h2>
                 <p>You: <span id="your-response-time" class="highlight">0s</span></p>
-                <p>Her: <span id="her-response-time" class="highlight">0 hours</span></p>
+                <p>Her: <span id="her-response-time" class="highlight">0s</span></p>
             </div>
         </div>
 
@@ -156,21 +139,67 @@
             e.preventDefault();
 
             // Get user input
-            const yourMessages = parseInt(document.getElementById('your-messages-input').value);
-            const herMessages = parseInt(document.getElementById('her-messages-input').value);
-            const yourResponseTime = parseInt(document.getElementById('your-response-time-input').value);
-            const herResponseTime = parseInt(document.getElementById('her-response-time-input').value);
+            const chatLog = document.getElementById('chat-input').value;
+
+            // Parse chat data
+            const lines = chatLog.split('\n');
+            let yourMessages = 0;
+            let herMessages = 0;
+            let yourResponseTimes = [];
+            let herResponseTimes = [];
+            let lastSender = null;
+            let lastTime = null;
+
+            lines.forEach(line => {
+                const match = line.match(/\[(\d{2}:\d{2})\] ([^:]+): (.+)/);
+                if (match) {
+                    const time = match[1];
+                    const sender = match[2];
+                    const message = match[3];
+
+                    if (sender.toLowerCase() === 'you') {
+                        yourMessages++;
+                        if (lastSender === 'her' && lastTime) {
+                            yourResponseTimes.push(getTimeDifference(lastTime, time));
+                        }
+                        lastSender = 'you';
+                        lastTime = time;
+                    } else {
+                        herMessages++;
+                        if (lastSender === 'you' && lastTime) {
+                            herResponseTimes.push(getTimeDifference(lastTime, time));
+                        }
+                        lastSender = 'her';
+                        lastTime = time;
+                    }
+                }
+            });
+
+            const yourAvgResponseTime = getAverageTime(yourResponseTimes);
+            const herAvgResponseTime = getAverageTime(herResponseTimes);
 
             // Update data dynamically
             document.getElementById('your-messages').textContent = yourMessages;
             document.getElementById('her-messages').textContent = herMessages;
-            document.getElementById('your-response-time').textContent = `${yourResponseTime}s`;
-            document.getElementById('her-response-time').textContent = `${herResponseTime} hours`;
+            document.getElementById('your-response-time').textContent = `${yourAvgResponseTime}s`;
+            document.getElementById('her-response-time').textContent = `${herAvgResponseTime}s`;
 
-            // Update charts
             interestChart.data.datasets[0].data = [yourMessages, herMessages];
             interestChart.update();
         });
+
+        function getTimeDifference(start, end) {
+            const [startHours, startMinutes] = start.split(':').map(Number);
+            const [endHours, endMinutes] = end.split(':').map(Number);
+            return (endHours * 60 + endMinutes) - (startHours * 60 + startMinutes);
+        }
+
+        function getAverageTime(times) {
+            if (times.length === 0) return 0;
+            const total = times.reduce((acc, time) => acc + time, 0);
+            return Math.round(total / times.length);
+        }
     </script>
 </body>
 </html>
+
