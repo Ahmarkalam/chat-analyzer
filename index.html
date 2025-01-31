@@ -1,14 +1,159 @@
-<div class="container">
-    <h1>Chat Wrapped</h1>
-    <div id="analysis-results">
-        <p>📊 Total Interactions: <span style="color: #00ff88;">5789</span></p>
-        <p>💚 Interest Level: <span id="interest-level">87%</span></p>
-        <p>🚩 Red Flags: <span id="red-flags">2%</span></p>
-        <p>🔝 Top Used Words: <span id="top-words">her</span></p>
-        <p style="border-left: 3px solid #ff4d4d; padding-left: 10px; margin-top: 20px;">
-            ⚠️ Still hangs out with her ex Blake
-        </p>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Analyzer</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #FFE3F1, #FFD6F5);
+            font-family: 'Arial', sans-serif;
+        }
+        .card {
+            background: #FFF;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 16px;
+            padding: 20px;
+        }
+        .highlight {
+            background: #FF6384;
+            color: #FFF;
+            border-radius: 8px;
+            padding: 5px 10px;
+            font-weight: bold;
+        }
+        .red-flags {
+            background: #FFEBEE;
+            border: 2px solid #FF6384;
+            border-radius: 12px;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body class="flex flex-col items-center py-10">
+    <div class="card w-11/12 max-w-4xl">
+        <h1 class="text-center text-3xl font-bold mb-5">Chat Wrapped</h1>
+
+        <div class="grid grid-cols-2 gap-4">
+            <div class="text-center">
+                <h2 class="text-lg font-semibold">Messages Count</h2>
+                <p>You: <span id="your-messages" class="highlight">5789</span></p>
+                <p>Her: <span id="her-messages" class="highlight">872</span></p>
+            </div>
+
+            <div class="text-center">
+                <h2 class="text-lg font-semibold">Average Response Time</h2>
+                <p>You: <span id="your-response-time" class="highlight">34s</span></p>
+                <p>Her: <span id="her-response-time" class="highlight">13 hours</span></p>
+            </div>
+        </div>
+
+        <div class="text-center my-4">
+            <h2 class="text-lg font-semibold">Interest Level</h2>
+            <canvas id="interest-chart" width="200" height="200"></canvas>
+        </div>
+
+        <div class="my-4">
+            <h2 class="text-lg font-semibold">Red Flags</h2>
+            <div class="red-flags">
+                <ul class="list-disc pl-5">
+                    <li>Still hangs out with her ex Blake</li>
+                    <li>Called you broke <span class="highlight">23</span> times</li>
+                    <li>Blocked you a total of <span class="highlight">122</span> times</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="my-4">
+            <h2 class="text-lg font-semibold">Top Used Words</h2>
+            <div class="grid grid-cols-2 gap-4">
+                <div class="text-center">
+                    <h3 class="font-semibold">Her</h3>
+                    <ul class="list-none">
+                        <li>Blake: <span id="her-word-blake" class="highlight">98</span></li>
+                        <li>Block: <span id="her-word-block" class="highlight">87</span></li>
+                        <li>Syd: <span id="her-word-syd" class="highlight">60</span></li>
+                        <li>No: <span id="her-word-no" class="highlight">30</span></li>
+                    </ul>
+                </div>
+                <div class="text-center">
+                    <h3 class="font-semibold">You</h3>
+                    <ul class="list-none">
+                        <li>Amy: <span id="your-word-amy" class="highlight">599</span></li>
+                        <li>Please: <span id="your-word-please" class="highlight">401</span></li>
+                        <li>Sorry: <span id="your-word-sorry" class="highlight">350</span></li>
+                        <li>No: <span id="your-word-no" class="highlight">274</span></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="my-4">
+            <h2 class="text-lg font-semibold">Attachment Style</h2>
+            <div class="grid grid-cols-2">
+                <div class="text-center">
+                    <h3 class="font-semibold">You</h3>
+                    <p>Anxious: <span id="your-attachment" class="highlight">68%</span></p>
+                </div>
+                <div class="text-center">
+                    <h3 class="font-semibold">Her</h3>
+                    <p>Avoidant: <span id="her-attachment" class="highlight">100%</span></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="my-4">
+            <h2 class="text-lg font-semibold">Messages Per Month</h2>
+            <canvas id="messages-chart" width="400" height="200"></canvas>
+        </div>
     </div>
-    <textarea id="chat-input" placeholder="Paste your chat here..."></textarea>
-    <button id="analyze-btn">Analyze Chat</button>
-</div>
+
+    <script>
+        // Interest Level Chart
+        const interestCtx = document.getElementById('interest-chart').getContext('2d');
+        new Chart(interestCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['You', 'Her'],
+                datasets: [{
+                    data: [87, 2],
+                    backgroundColor: ['#FF6384', '#36A2EB']
+                }]
+            },
+            options: {
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'bottom'
+                    }
+                }
+            }
+        });
+
+        // Messages Per Month Chart
+        const messagesCtx = document.getElementById('messages-chart').getContext('2d');
+        new Chart(messagesCtx, {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                datasets: [{
+                    label: 'Messages',
+                    data: [500, 800, 600, 700, 1000, 1200, 1100, 900, 850, 950, 2000, 2500],
+                    borderColor: '#FF6384',
+                    borderWidth: 2,
+                    fill: false
+                }]
+            },
+            options: {
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
