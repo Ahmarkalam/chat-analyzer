@@ -1,0 +1,77 @@
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #0f0f0f; /* Dark background */
+    color: #ffffff; /* White text */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    padding: 20px;
+}
+
+.container {
+    background: linear-gradient(145deg, #1a1a1a, #2d2d2d); /* Gradient container */
+    padding: 30px;
+    border-radius: 16px;
+    box-shadow: 0 0 30px rgba(0, 255, 136, 0.1); /* Neon green glow */
+    text-align: center;
+    max-width: 500px;
+    width: 100%;
+}
+
+h1 {
+    color: #00ff88; /* Neon green title */
+    font-size: 2.5em;
+    margin-bottom: 30px;
+}
+
+#analysis-results p {
+    margin: 15px 0;
+    font-size: 1.1em;
+}
+
+#interest-level {
+    color: #00ff88; /* Green for positive metric */
+    font-size: 1.5em;
+    font-weight: bold;
+}
+
+#red-flags {
+    color: #ff4d4d; /* Red for warnings */
+    font-size: 1.5em;
+    font-weight: bold;
+}
+
+#top-words {
+    color: #ffd700; /* Gold for highlighted words */
+    font-weight: bold;
+}
+
+textarea {
+    width: 100%;
+    height: 150px;
+    margin: 20px 0;
+    padding: 15px;
+    border-radius: 8px;
+    border: 2px solid #444;
+    background-color: #1a1a1a;
+    color: #ffffff;
+    font-family: 'Arial', sans-serif;
+}
+
+button {
+    margin-top: 20px;
+    padding: 12px 25px;
+    background: linear-gradient(90deg, #00ff88, #00cc6a); /* Gradient button */
+    color: #000000; /* Black text */
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+button:hover {
+    transform: scale(1.05);
+}
